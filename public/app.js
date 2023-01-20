@@ -1,5 +1,5 @@
 let socket = io();
-
+console.log(socket);
 let sections = document.querySelectorAll("section");
 
 function displaySection(id) {
@@ -25,11 +25,11 @@ menuItems.forEach((item) => {
     switch (name) {
       case "game":
         displaySection(name);
-        socket.emit("changeRoom", name);
+        socket.emit("changeRoom", { roomName: name, id: socket.id });
         break;
       case "chat":
         displaySection(name);
-        socket.emit("changeRoom", name, socket.id);
+        socket.emit("changeRoom", name);
         break;
     }
   });
