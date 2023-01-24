@@ -27,8 +27,13 @@ body {
   width: 100%;
   background-color: lightblue;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+#home > * input {
+  padding: 5px;
+  margin: 1vh;
 }
 #menu {
   height: 100%;

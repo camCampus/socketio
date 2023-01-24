@@ -1,5 +1,5 @@
 let socket = io();
-console.log(socket);
+
 let sections = document.querySelectorAll("section");
 
 function displaySection(id) {
@@ -17,11 +17,14 @@ function displaySection(id) {
 /*------------| ~ ************ ~ |------------*/
 
 let menuItems = document.querySelectorAll(".menuItem");
+console.log(menuItems);
+// let pseudoSub = document.querySelector("#pseudoSub");
+// let pseudoInput = document.querySelector("#pseudoInput").value;
 
 menuItems.forEach((item) => {
   item.addEventListener("click", (event) => {
     let name = event.target.attributes["data-name"].value;
-    console.log(name);
+
     switch (name) {
       case "game":
         displaySection(name);
@@ -35,6 +38,11 @@ menuItems.forEach((item) => {
   });
 });
 
+/*------------| ~ ************ ~ |------------*/
+/*------------|                  |------------*/
+/*------------| ~ GAME SECTION ~ |------------*/
+/*------------|                  |------------*/
+/*------------| ~ ************ ~ |------------*/
 let gameContainer = document.querySelector(".container");
 let choices = Array.from(gameContainer.children);
 
@@ -48,6 +56,12 @@ choices.forEach((child) => {
   });
 });
 
+socket.on("try", (e) => {
+  console.log(e);
+});
+socket.on("leave", (e) => {
+  console.log(e);
+});
 socket.on("move", (e) => {
   console.log(e);
 });

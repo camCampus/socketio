@@ -7,7 +7,9 @@ const io = new Server(server);
 const port = 9000;
 let gameLimit = [];
 let gameRoomNumber = 0;
-
+let nowInGame = [];
+let waitList = [];
+let gameRooms = [];
 app.use(express.static("public"));
 
 app.get("/", (req, res) => {
@@ -17,29 +19,55 @@ app.get("/", (req, res) => {
 io.on("connection", async (socket) => {
   let userId = socket.id;
   console.log("user-------| " + userId + "|-------connect");
-  socket.join("home");
 
-  socket.on("changeRoom", (obj) => {
-    console.log(obj);
-    createRoom(obj.roomName, obj.id, socket);
-    console.log(socket.rooms);
+  //Event quand le joueur rejoint les rooms games
+  socket.on("changeRoom", (user) => {
+    waitList.push(user.id);
+    let key = "room" + gameRoomNumber;
+    socket.join(key);
+
+    if (waitList.length === 2) {
+      gameRoomNumber++;
+      let players = {
+        room: key,
+        p1: waitList[0],
+        p2: waitList[1],
+      };
+      gameRooms.push(players);
+      waitList = [];
+      io.to(players.room).emit("try", key);
+    }
+
+    socket.on("disconnecting", () => {
+      let room;
+      socket.rooms.forEach((value) => {
+        if (value != socket.id) {
+          room = value;
+        }
+      });
+      gameRooms.forEach((gameRoom) => {
+        if (gameRoom.room === room) {
+          io.to(gameRoom.room).emit("leave", "player leave");
+        }
+      });
+    });
   });
 
   socket.on("move", (move) => {
-    io.emit("move", move);
+    let room;
+    socket.rooms.forEach((value) => {
+      if (value != socket.id) {
+        room = value;
+      }
+    });
+    gameRooms.forEach((gameRoom) => {
+      if (gameRoom.room === room) {
+        socket.to(gameRoom.room).emit("move", move);
+      }
+    });
   });
 });
+
 server.listen(port, () => {
   console.log("listening on *:" + port);
 });
-
-function createRoom(name, id, socket) {
-  if (name === "game" && gameLimit.length < 2) {
-    gameLimit.push(id);
-    return socket.join(name + gameRoomNumber);
-  } else {
-    gameLimit = [];
-    gameRoomNumber++;
-    return socket.join(name + gameRoomNumber);
-  }
-}
