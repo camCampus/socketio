@@ -5,9 +5,8 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 const port = 9000;
-let gameLimit = [];
+let res = [];
 let gameRoomNumber = 0;
-let nowInGame = [];
 let waitList = [];
 let gameRooms = [];
 app.use(express.static("public"));
@@ -53,21 +52,38 @@ io.on("connection", async (socket) => {
     });
   });
 
+  //Function pour envoyer le coup joué aux joeur adverse de la room
   socket.on("move", (move) => {
     let room;
+
+    //Recupérer la room du player
     socket.rooms.forEach((value) => {
       if (value != socket.id) {
         room = value;
       }
     });
+
+    checkPlay(res, room, move, socket);
+    //Chercher la bonne room et emit le coup joué à l'adversaire
     gameRooms.forEach((gameRoom) => {
       if (gameRoom.room === room) {
         socket.to(gameRoom.room).emit("move", move);
       }
     });
+    console.log(res);
   });
 });
 
 server.listen(port, () => {
   console.log("listening on *:" + port);
 });
+
+function checkPlay(array, room, { play: play }, socket) {
+  let obj = {
+    [room]: {
+      id: socket.id,
+      play: play,
+    },
+  };
+  array.push(obj);
+}
