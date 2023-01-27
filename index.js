@@ -21,11 +21,12 @@ io.on("connection", async (socket) => {
 
   //Event quand le joueur rejoint les rooms games
   socket.on("changeRoom", (user) => {
-    waitList.push(user.id);
+    waitList.push(user);
+    //waitList.push(user.id);
     let key = "room" + gameRoomNumber;
     socket.join(key);
 
-    if (waitList.length === 2) {
+    if (waitList.length === 2 && waitList[0] != waitList[1]) {
       gameRoomNumber++;
       let players = {
         room: key,
@@ -35,15 +36,13 @@ io.on("connection", async (socket) => {
       gameRooms.push(players);
       waitList = [];
       io.to(players.room).emit("try", key);
+    } else if (waitList.length === 2 && waitList[0] === waitList[1]) {
+      waitList.pop();
     }
 
     socket.on("disconnecting", () => {
-      let room;
-      socket.rooms.forEach((value) => {
-        if (value != socket.id) {
-          room = value;
-        }
-      });
+      let room = getRoom(socket);
+
       gameRooms.forEach((gameRoom) => {
         if (gameRoom.room === room) {
           io.to(gameRoom.room).emit("leave", "player leave");
@@ -54,22 +53,22 @@ io.on("connection", async (socket) => {
 
   //Function pour envoyer le coup joué aux joeur adverse de la room
   socket.on("move", (move) => {
-    let room;
+    let room = getRoom(socket);
 
-    //Recupérer la room du player
-    socket.rooms.forEach((value) => {
-      if (value != socket.id) {
-        room = value;
-      }
+    gameRooms.forEach((e) => {
+      typeof e.room != undefined
+        ? console.log("find room")
+        : console.log("room not found");
     });
-
     checkPlay(res, room, move, socket);
+
     //Chercher la bonne room et emit le coup joué à l'adversaire
     gameRooms.forEach((gameRoom) => {
       if (gameRoom.room === room) {
         socket.to(gameRoom.room).emit("move", move);
       }
     });
+
     console.log(res);
   });
 });
@@ -86,4 +85,15 @@ function checkPlay(array, room, { play: play }, socket) {
     },
   };
   array.push(obj);
+}
+
+//Function pour recuper la room des joueurs
+function getRoom(socket) {
+  let res;
+  socket.rooms.forEach((value) => {
+    if (value != socket.id) {
+      res = value;
+    }
+  });
+  return res;
 }

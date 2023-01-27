@@ -1,6 +1,7 @@
 let socket = io();
 
 let sections = document.querySelectorAll("section");
+let wmes = document.getElementById("wmes");
 
 function displaySection(id) {
   sections.forEach((section) => {
@@ -27,7 +28,7 @@ menuItems.forEach((item) => {
 
     switch (name) {
       case "game":
-        displaySection(name);
+        wmes.innerHTML = "Waiting for player...";
         socket.emit("changeRoom", { roomName: name, id: socket.id });
         break;
       case "chat":
@@ -57,6 +58,8 @@ choices.forEach((child) => {
 });
 
 socket.on("try", (e) => {
+  displaySection("game");
+  wmes.innerHTML = "";
   console.log(e);
 });
 socket.on("leave", (e) => {
