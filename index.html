@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+      integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <title>Test</title>
+  </head>
+  <body>
+    <section id="home">
+      <!-- <div id="pseudoContainer">
+        <input type="text" id="pseudoInput" placeholder="pseudo" />
+        <input type="submit" id="pseudoSub" />
+      </div> -->
+      <div id="menu">
+        <p id="wmes"></p>
+        <div class="menuItem">
+          <i data-name="game" class="fa-solid fa-gamepad"></i>
+        </div>
+        <!-- <div class="menuItem">
+          <i data-name="chat" class="fa-regular fa-comment-dots"></i>
+        </div> -->
+      </div>
+    </section>
+
+    <section id="game">
+      <header>
+        <!-- <div id="waiting">
+          <p>Adversary is playing</p>
+          <span class="loading1">.</span><span class="loading2">.</span
+          ><span class="loading3">.</span>
+        </div> -->
+      </header>
+      <div class="container">
+        <i id="rock" class="fa-regular fa-hand-back-fist"></i>
+        <i id="paper" class="fa-regular fa-hand"></i>
+        <i id="scissors" class="fa-regular fa-hand-scissors"></i>
+      </div>
+    </section>
+
+    <section id="chat">
+      <h2>super chat</h2>
+    </section>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

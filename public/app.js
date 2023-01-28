@@ -46,6 +46,7 @@ menuItems.forEach((item) => {
 /*------------| ~ ************ ~ |------------*/
 let gameContainer = document.querySelector(".container");
 let choices = Array.from(gameContainer.children);
+let canPlay = false;
 
 // Player choice
 choices.forEach((child) => {
@@ -68,9 +69,38 @@ socket.on("leave", (e) => {
 socket.on("move", (e) => {
   console.log(e);
 });
-
+socket.on('advplay', (msg) => {
+  console.log(msg);
+  contDownPlay()
+})
 socket.on("servmess", (e) => {
   JSON.stringify(e);
   console.log(e);
 });
 //span loading animation
+
+
+
+
+// setInterval(() => {
+//   contDownPlay()
+// }, 1000)
+
+let cInter;
+
+function contDownPlay() {
+  let c = 5;
+  //Check si un interval est déja declanché
+  if(!cInter) {
+    cInter =  setInterval(() => {
+      console.log("Timeout: ", c);
+      c--
+      if(c === 0) {
+        console.log("Out of time");
+        clearInterval(cInter)
+        cInter = null
+        return console.log("end");
+      } 
+    }, 1000)
+  }
+}

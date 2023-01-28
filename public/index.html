@@ -11,46 +11,20 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <link rel="stylesheet" href="style.css" />
-    <title>Test</title>
+    <link rel="stylesheet" href="main.css" />
+    <title>Rock Paper Scissors</title>
   </head>
   <body>
-    <section id="home">
-      <!-- <div id="pseudoContainer">
-        <input type="text" id="pseudoInput" placeholder="pseudo" />
-        <input type="submit" id="pseudoSub" />
-      </div> -->
-      <div id="menu">
-        <p id="wmes"></p>
-        <div class="menuItem">
-          <i data-name="game" class="fa-solid fa-gamepad"></i>
-        </div>
-        <!-- <div class="menuItem">
-          <i data-name="chat" class="fa-regular fa-comment-dots"></i>
-        </div> -->
-      </div>
-    </section>
-
-    <section id="game">
-      <header>
-        <div id="waiting">
-          <p>Adversary is playing</p>
-          <span class="loading1">.</span><span class="loading2">.</span
-          ><span class="loading3">.</span>
-        </div>
-      </header>
-      <div class="container">
-        <i id="rock" class="fa-regular fa-hand-back-fist"></i>
-        <i id="paper" class="fa-regular fa-hand"></i>
-        <i id="scissors" class="fa-regular fa-hand-scissors"></i>
-      </div>
-    </section>
-
-    <section id="chat">
-      <h2>super chat</h2>
-    </section>
-
+    <div id="title">
+      <h2>Rock Paper Scissors</h2>
+    </div>
+    <div id="register">
+      <label for="pseudo">Entrer votre pseudo (min 3 lettres)</label>
+      <p id="pError"></p>
+      <input id="pseudo" type="text" />
+      <input id="pseudoSubmit" type="submit" value="Envoyer" />
+    </div>
     <script src="/socket.io/socket.io.js"></script>
-    <script type="module" src="app.js"></script>
+    <script type="module" src="./client.js"></script>
   </body>
 </html>

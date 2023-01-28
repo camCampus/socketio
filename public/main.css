@@ -1,0 +1,30 @@
+@import url("https://fonts.googleapis.com/css2?family=Unbounded:wght@500&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Unbounded", cursive;
+}
+
+body {
+  height: 100vh;
+  width: 100%;
+  background-color: gray;
+}
+
+.container {
+  height: 20vh;
+  width: fit-content;
+  margin: auto;
+  padding: 1vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(243, 14, 255);
+  border: 1px solid red;
+  font-size: calc(2rem + 10vw);
+}
+.container > * {
+  cursor: pointer;
+}

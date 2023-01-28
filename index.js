@@ -5,95 +5,56 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 const port = 9000;
-let res = [];
-let gameRoomNumber = 0;
-let waitList = [];
+
+let waitRoom = [];
+let roomId = 0;
 let gameRooms = [];
+
+/* ----| ROUTING |---- */
+
 app.use(express.static("public"));
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "index.html");
 });
 
-io.on("connection", async (socket) => {
-  let userId = socket.id;
-  console.log("user-------| " + userId + "|-------connect");
+/* ----| SOCKET |---- */
 
-  //Event quand le joueur rejoint les rooms games
-  socket.on("changeRoom", (user) => {
-    waitList.push(user);
-    //waitList.push(user.id);
-    let key = "room" + gameRoomNumber;
-    socket.join(key);
+io.on("connection", (socket) => {
+  const userId = socket.id;
 
-    if (waitList.length === 2 && waitList[0] != waitList[1]) {
-      gameRoomNumber++;
+  socket.on("goGame", (pseudo) => {
+    const userName = pseudo;
+
+    //Liste d'attente et création de la game room
+    waitRoom.push({ name: pseudo, id: userId });
+
+    let roomKey = "game" + roomId;
+    socket.join(roomKey);
+
+    //Lancement de la game
+    if (waitRoom.length === 2) {
+      roomId++;
+
       let players = {
-        room: key,
-        p1: waitList[0],
-        p2: waitList[1],
+        room: roomKey,
+        p1: waitRoom[0],
+        p2: waitRoom[1],
       };
+
       gameRooms.push(players);
-      waitList = [];
-      io.to(players.room).emit("try", key);
-    } else if (waitList.length === 2 && waitList[0] === waitList[1]) {
-      waitList.pop();
+      waitRoom = [];
+
+      io.to(roomKey).emit("gameStart");
     }
-
-    socket.on("disconnecting", () => {
-      let room = getRoom(socket);
-
-      gameRooms.forEach((gameRoom) => {
-        if (gameRoom.room === room) {
-          io.to(gameRoom.room).emit("leave", "player leave");
-        }
-      });
-    });
   });
 
-  //Function pour envoyer le coup joué aux joeur adverse de la room
-  socket.on("move", (move) => {
-    let room = getRoom(socket);
-
-    gameRooms.forEach((e) => {
-      typeof e.room != undefined
-        ? console.log("find room")
-        : console.log("room not found");
-    });
-    checkPlay(res, room, move, socket);
-
-    //Chercher la bonne room et emit le coup joué à l'adversaire
-    gameRooms.forEach((gameRoom) => {
-      if (gameRoom.room === room) {
-        socket.to(gameRoom.room).emit("move", move);
-      }
-    });
-
-    console.log(res);
-  });
+  //Changement de room
+  socket.on("goRoom", () => {});
 });
+
+/* ----| SERVER |---- */
 
 server.listen(port, () => {
   console.log("listening on *:" + port);
 });
-
-function checkPlay(array, room, { play: play }, socket) {
-  let obj = {
-    [room]: {
-      id: socket.id,
-      play: play,
-    },
-  };
-  array.push(obj);
-}
-
-//Function pour recuper la room des joueurs
-function getRoom(socket) {
-  let res;
-  socket.rooms.forEach((value) => {
-    if (value != socket.id) {
-      res = value;
-    }
-  });
-  return res;
-}
