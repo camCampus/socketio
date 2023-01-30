@@ -49,8 +49,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  //Changement de room
-  socket.on("goRoom", () => {});
+  //
 });
 
 /* ----| SERVER |---- */
