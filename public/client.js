@@ -50,15 +50,18 @@ function onPlay() {
 function startGame() {
   let txt = document.createElement("p");
   container.appendChild(txt);
-  setInterval(() => {
+  const myInter = setInterval(() => {
     if (s >= 0) {
-      let t = s - Math.floor((s % (1000 / 60)) / 1000);
-      console.log(t);
+      // let t = s - Math.floor((s % (1000 / 60)) / 1000);
+      // console.log(t);
       txt.innerHTML = s;
       s--;
+      console.log(s);
     }
-    if (s === 0) {
+    if (s === -1) {
       onPlay();
+      txt.remove();
+      clearInterval(myInter);
     }
   }, 1000);
 }

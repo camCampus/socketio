@@ -46,10 +46,9 @@ io.on("connection", (socket) => {
       waitRoom = [];
 
       io.to(roomKey).emit("gameStart");
+      getRoom(socket);
     }
   });
-
-  //
 });
 
 /* ----| SERVER |---- */
@@ -57,3 +56,11 @@ io.on("connection", (socket) => {
 server.listen(port, () => {
   console.log("listening on *:" + port);
 });
+
+function getRoom(socket) {
+  socket.rooms.forEach((element) => {
+    if (element != socket.id) {
+      console.log(element);
+    }
+  });
+}
